@@ -22,19 +22,18 @@ connection.connect(err => {
 });
 
 // Definindo um endpoint para consultar na Data Base
-app.get('/appointments/doctor/:id', async (req, res) => {
-    const id = req.params.id;
+app.get('/appointments', async (req, res) => { 
     connection.query(
-        "Select * from appointments Where doctor_id =?;", [id], (err, result, fields) => {
+        "Select * from appointments", (err, result, fields) => {
             res.send(result);
         })
 
 });
 
-app.delete('/appointments/doctor/:id', async (req, res) => {
+app.delete('/appointments/:id', async (req, res) => {
     const id = req.params.id;
     connection.query(
-        "Delete from appointments Where doctor_id =?;", [id], (err, result, fields) => {
+        "Delete from appointments Where id =?;", [id], (err, result, fields) => {
             res.send(result);
         })
 
