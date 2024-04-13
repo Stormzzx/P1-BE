@@ -35,7 +35,7 @@ app.delete('/appointments/:id', async (req, res) => {
     connection.query(
         "Delete from appointments Where id =?;", [id], (err, result, fields) => {
             res.send(result);
-        })
+        });
 
 });
 
