@@ -25,11 +25,6 @@ connection.connect(err => {
 
 app.use (express.json());
 
-
-// Parte A_a - Listar todas as consultas existentes na tabela e devolver na resposta.
-
-// Endpoint para listar todas as consultas que existem na base de dados.
-
 app.get('/appointments', (req, res) => {
     connection.query(
         "SELECT * FROM appointments", (error, result, fields) => {
