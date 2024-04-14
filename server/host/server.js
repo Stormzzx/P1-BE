@@ -27,7 +27,6 @@ app.get('/appointments', async (req, res) => {
         "Select * from appointments", (err, result, fields) => {
             res.send(result);
         })
-
 });
 
 app.delete('/appointments/:id', async (req, res) => {
@@ -39,18 +38,6 @@ app.delete('/appointments/:id', async (req, res) => {
 
 });
 
-app.post('/appointments', async (req, res) => {
-    var newAppointment = req.body;
-    console.log(newAppointment)
-    connection.execute(
-        "insert into appointments(clinic, doctor_id, patient_id, room, duration, location, start_time )  values (?, ?, ?, ?, ?, ?, ?)",
-
-        [newAppointment.clinic, newAppointment.doctor_id, newAppointment.patient_id, newAppointment.room, newAppointment.duration, newAppointment.location, newAppointment.start_time], (err, result, fields) => {
-            console.log(err, result, fields)
-            res.send(result);
-        })
-
-});
 
 // Iniciando o servidor na porta 3000
 app.listen(PORT, () => {
