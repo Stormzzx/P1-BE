@@ -41,28 +41,6 @@ app.get('/appointments', (req, res) => {
         });
 });
 
-//Parte B
-// Parte B_a - Selecionar apenas uma consulta pelo seu ID (via query) e devolver a mesma na resposta.
-// Endpoint para selecionar uma consulta pelo seu ID e devolver a mesma 
-
-app.get('/appointments/:id', (req, res) => {
-    // Endpoint genérico para selecionar uma consulta pelo ID
-    const id = req.params.id;
-    connection.query(
-        "SELECT * FROM appointments WHERE id = ?", [id], (error, result, fields) => {
-            if (error) {
-                console.error('Erro ao selecionar consulta:', error);
-                res.status(500).send('Erro ao selecionar consulta');
-                return;
-            }
-            if (result.length === 0) {
-                res.status(404).send('Consulta não encontrada');
-                return;
-            }
-            res.send(result[0]);
-        });
-});
-
 // Parte B-b - Apagar uma consulta existente (via params) e atualizar a tabela, indicar mensagem de erro se o ID
 //             da sessão a apagar não existir ou mensagem de sucesso caso seja apagada.
 // Endpoint para apagar uma consulta que já exista e atualizar na tabela
