@@ -46,137 +46,12 @@ app.get('/appointments', (req, res) => {
         });
 });
 
-
-// Parte A_b - Adicionar uma nova consulta à base de dados. Deverá ser enviada uma mensagem de sucesso na
-//             resposta indicando o ID da consulta adicionada.
-
-// Endpoint para adicionar uma nova consulta á base de dados inserindo os tais dados no Postman body/raw. Contém mensagem de sucesso na resposta indicando o id da consulta (appointment)
-
-app.post('/appointments', (req, res) => {
-
-    // Destruturação dos dados do corpo da requisição
-    const { clinic, doctor_id, patient_id, room, duration, start_time, comment } = req.body;
-    
-    // Verifica se os campos obrigatórios estão presentes
-    if (!clinic || !doctor_id || !patient_id || !room || !duration || !start_time) {
-        let errorMessage = '';
-        if (!clinic) {
-            errorMessage += 'Clinica é obrigatório preencher. ';
-        }
-        if (!doctor_id) {
-            errorMessage += 'Nome do Doctor é obrigatório identificar. ';
-        }
-        if (!patient_id) {
-            errorMessage += 'Patiente é obrigatório preencher para identificar. ';
-        }
-        if (!room) {
-            errorMessage += 'Sala da clinica é obrigatório preencher. ';
-        }
-        if (!duration) {
-            errorMessage += 'Duração é obrigatório preencher. ';
-        }
-        if (!start_time) {
-            errorMessage += 'Hora de início é obrigatório preencher. ';
-        }
-        return res.status(400).json({
-            error: errorMessage
-        });
-    }
-
-    // Query para inserir no banco de dados
-    const sqladicionar = 'INSERT INTO appointments (clinic, doctor_id, patient_id, room, duration, start_time, comment) VALUES (?, ?, ?, ?, ?, ?, ?)';
-    connection.query(sqladicionar, [clinic, doctor_id, patient_id, room, duration, start_time, comment], (error, result) => {
-        if (error) {
-            console.error('Erro ao adicionar a consulta.');
-            return res.status(500).json({
-                error: 'Erro ao adicionar consulta'
-            });
-        }
-        const consultaId = result.insertId;
-        return res.status(201).json({
-            id: consultaId,
-            sucesso: 'Consulta adicionada com sucesso!'
-        });
-    });
-});
-
-
-//Parte A_c - Selecionar todos as consultas de um determinado médicoe devolver essa lista na resposta.
-
-// Endpoint para selecinar todas as consultas de um determinado médico através do id do mesmo.
-app.get('/appointments/doctor_id/:doctor_id', (req, res) => {
-    const doctor_id = req.params.doctor_id; // Usar req.params para obter o parâmetro da URL
-    connection.query(
-        "SELECT * FROM appointments WHERE doctor_id = ?", [doctor_id], (error, result, fields) => {
-            if (error) {
-                console.error('Erro ao selecionar consulta:', error);
-                res.status(500).send('Erro ao selecionar consulta');
-                return;
-            }
-            if (result.length === 0) {
-                res.status(404).send('Consulta não encontrada');
-                return;
-            }
-            res.send(result);
-        });
-});
-
-
-//Parte A_d - Modificar o horário da consulta, (via query) somando ou subtraindo por exemplo 2h, e atualizar a entrada. 
-//            Devolver a entrada atualizada na resposta.
-
-// Endpoint parar modificar o horário de uma consulta atráves do seu id. A alteração é feito no body/raw do Postman-
-app.put('/appointments/start_time/:id', (req, res) => {
-    const id = req.params.id; // Usar req.params para obter o parâmetro da URL
-    const start_time = req.body.start_time;
-    
-    // Verificar se o campo start_time está presente no corpo da requisição
-    if (!start_time) {
-        return res.status(400).send('O campo start_time é obrigatório');
-    }
-    
-    connection.query(
-        "UPDATE appointments SET start_time = ? WHERE id = ?", [start_time, id], (error, results) => {
-            if (error) {
-                console.error('Erro ao alterar o horário', error);
-                return res.status(500).send('Erro ao alterar o horário');
-            }
-            
-            // Verificar se a consulta foi atualizada com sucesso
-            if (results.affectedRows === 0) {
-                return res.status(404).send('Consulta não encontrada');
-            }
-            
-            // Retornar uma resposta de sucesso
-            res.status(200).send('Horário atualizado com sucesso');
-        });
-});
-
-// Parte A_e - Listar todas as consultas anteriores a uma hora (via query) e devolver a lista na resposta.
-
-// Endpoint para listar todas as consultas anteriores a uma hora 
-
-app.get('/appointments/Hanterior', (req, res) => {
-    const horaA = req.query.hora; // Obtém a hora anterior da query
-
-    // Query para selecionar as consultas anteriores à hora especificada
-    const sql = 'SELECT * FROM appointments WHERE start_time < ?';
-
-    connection.query(sql, [horaA], (error, results) => {
-        if (error) {
-            console.error('Erro ao buscar consultas anteriores:', error);
-            return res.status(500).send('Erro ao buscar consultas anteriores.');
-        }
-        
-        res.status(200).json(results); // Retorna a lista de consultas anteriores
-    });
-});
-
 //Parte B
 // Parte B_a - Selecionar apenas uma consulta pelo seu ID (via query) e devolver a mesma na resposta.
 // Endpoint para selecionar uma consulta pelo seu ID e devolver a mesma 
 
 app.get('/appointments/:id', (req, res) => {
+    // Endpoint genérico para selecionar uma consulta pelo ID
     const id = req.params.id;
     connection.query(
         "SELECT * FROM appointments WHERE id = ?", [id], (error, result, fields) => {
@@ -252,7 +127,8 @@ app.put('/appointments/:id/comments', (req, res) => {
 //             na resposta. A ordenação terá que ser efetuada em Javascript.
 // Endpoint para listar todas as consultas ordenadas por ordem crescente de duração e devolver a lista ordenada 
 
-app.get('/appointments/ordenarquery', (req, res) => {
+app.get('/appointments/ordered', (req, res) => {
+    // Endpoint específico para listar consultas ordenadas
     connection.query(
         "SELECT * FROM appointments ORDER BY duration ASC", (error, results, fields) => {
             if (error) {
