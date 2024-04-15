@@ -252,7 +252,7 @@ app.put('/appointments/:id/comments', (req, res) => {
 //             na resposta. A ordenação terá que ser efetuada em Javascript.
 // Endpoint para listar todas as consultas ordenadas por ordem crescente de duração e devolver a lista ordenada 
 
-app.get('/appointments/ordenarquery', (req, res) => {
+app.get('/appointments/ordered', (req, res) => {
     connection.query(
         "SELECT * FROM appointments ORDER BY duration ASC", (error, results, fields) => {
             if (error) {
