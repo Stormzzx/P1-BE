@@ -173,6 +173,23 @@ app.get('/appointments/Hanterior', (req, res) => {
 });
 
 //Parte B
+
+// Parte B_e - Listar todas as consultas ordenadas por ordem crescente de duração e devolver a lista ordenada
+//             na resposta. A ordenação terá que ser efetuada em Javascript.
+// Endpoint para listar todas as consultas ordenadas por ordem crescente de duração e devolver a lista ordenada 
+
+app.get('/appointments/ordered', (req, res) => {
+    connection.query(
+        "SELECT * FROM appointments ORDER BY duration ASC", (error, results, fields) => {
+            if (error) {
+                console.error('Erro ao ordenar consultas:', error);
+                res.status(500).send('Erro ao ordenar consultas'); //erro de servidor
+                return;
+            }
+            res.send(results);
+        });
+});
+
 // Parte B_a - Selecionar apenas uma consulta pelo seu ID (via query) e devolver a mesma na resposta.
 // Endpoint para selecionar uma consulta pelo seu ID e devolver a mesma 
 
@@ -247,22 +264,6 @@ app.put('/appointments/:id/comments', (req, res) => {
         });
 });
 
-
-// Parte B_e - Listar todas as consultas ordenadas por ordem crescente de duração e devolver a lista ordenada
-//             na resposta. A ordenação terá que ser efetuada em Javascript.
-// Endpoint para listar todas as consultas ordenadas por ordem crescente de duração e devolver a lista ordenada 
-
-app.get('/appointments/ordered', (req, res) => {
-    connection.query(
-        "SELECT * FROM appointments ORDER BY duration ASC", (error, results, fields) => {
-            if (error) {
-                console.error('Erro ao ordenar consultas:', error);
-                res.status(500).send('Erro ao ordenar consultas'); //erro de servidor
-                return;
-            }
-            res.send(results);
-        });
-});
 
 // Iniciando o servidor na porta 8081
 app.listen(PORT, () => {
